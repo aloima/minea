@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <time.h>
 
 int main(int32_t argc, char *argv[]) {
   if (argc == 2) {
@@ -23,6 +24,8 @@ int main(int32_t argc, char *argv[]) {
       puts("minea: invalid option, use --help/-h");
       exit(EXIT_FAILURE);
     }
+  } else {
+    srand(time(NULL));
   }
 
   exit(EXIT_SUCCESS);

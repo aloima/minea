@@ -1,4 +1,4 @@
-#include "minea.h"
+#include "../minea.h"
 
 #include <stdlib.h>
 #include <stdbool.h>

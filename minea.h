@@ -23,4 +23,7 @@
     uint32_t size;
     uint32_t len; // (len * len) = size, represents row and column length
   };
+
+  tile_t *get_tile(struct Tiles tiles, uint32_t size, uint32_t x, uint32_t y);
+  struct Tiles generate_empty_tiles(uint32_t size);
 #endif

@@ -1,2 +1,4 @@
 /minea
 /vgcore.*
+.cache/
+/compile_commands.json

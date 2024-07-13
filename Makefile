@@ -1,6 +1,6 @@
 CC := gcc
 CFLAGS := -O2 -Wall -Wextra
-LIBS := -lm
+LIBS := $(shell pkg-config --cflags --libs ncurses) -lm -lmenu
 
 compile:
 	$(CC) $(CFLAGS) ./src/*.c -o minea $(LIBS)

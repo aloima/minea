@@ -26,6 +26,7 @@ int main(int32_t argc, char *argv[]) {
     }
   } else {
     srand(time(NULL));
+    init_app();
   }
 
   exit(EXIT_SUCCESS);

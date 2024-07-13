@@ -15,7 +15,9 @@
   typedef struct {
     bool flagged;
     bool mine;
-    pos_t position; 
+    pos_t position;
+    bool opened;
+    uint32_t value;
   } tile_t;
 
   struct Tiles {

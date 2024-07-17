@@ -39,6 +39,13 @@ void about_page() {
         refresh();
         init_menu();
         return;
+
+      case KEY_RESIZE:
+        delwin(win);
+        clear();
+        refresh();
+        about_page();
+        return;
     }
   }
 }
@@ -105,6 +112,14 @@ void init_menu() {
             clear_menu(items, menu, menu_win, menu_derwin);
             return;
         }
+
+        break;
+      }
+
+      case KEY_RESIZE: {
+        clear_menu(items, menu, menu_win, menu_derwin);
+        init_menu();
+        return;
       }
     }
   }

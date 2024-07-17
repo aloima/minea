@@ -52,13 +52,16 @@ void about_page() {
 
 void clear_menu(ITEM **items, MENU *menu, WINDOW *menu_win, WINDOW *menu_derwin) {
   unpost_menu(menu);
+  free_menu(menu);
+
   free_item(items[0]);
   free_item(items[1]);
   free_item(items[2]);
-  free_menu(menu);
   free(items);
+
   delwin(menu_derwin);
   delwin(menu_win);
+
   clear();
   refresh();
 }

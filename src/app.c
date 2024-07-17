@@ -1,5 +1,6 @@
 #include "../minea.h"
 
+#include <curses.h>
 #include <stdbool.h>
 #include <stdlib.h>
 
@@ -9,6 +10,7 @@
 void init_menu();
 void about_page();
 void clear_menu(ITEM **items, MENU *menu, WINDOW *menu_win, WINDOW *menu_derwin);
+void handle_menu_enter(int index, ITEM **items, MENU *menu, WINDOW *menu_win, WINDOW *menu_derwin);
 
 void about_page() {
   int total_cols, total_lines;
@@ -66,6 +68,22 @@ void clear_menu(ITEM **items, MENU *menu, WINDOW *menu_win, WINDOW *menu_derwin)
   refresh();
 }
 
+void handle_menu_enter(int index, ITEM **items, MENU *menu, WINDOW *menu_win, WINDOW *menu_derwin) {
+  switch (index) {
+    case 1:
+      clear_menu(items, menu, menu_win, menu_derwin);
+      about_page();
+      return;
+
+    case 2:
+      clear_menu(items, menu, menu_win, menu_derwin);
+      return;
+
+    default:
+      return;
+  }
+}
+
 void init_menu() {
   ITEM **items = malloc(4 * sizeof(ITEM *));
   items[0] = new_item("Play", NULL);
@@ -78,6 +96,7 @@ void init_menu() {
 
   MENU *menu = new_menu(items);
   WINDOW *menu_win = newwin(7, 30, (total_lines - 7) / 2, (total_cols - 30) / 2);
+  mousemask(ALL_MOUSE_EVENTS, NULL);
   keypad(menu_win, true);
 
   set_menu_mark(menu, " ");
@@ -88,6 +107,8 @@ void init_menu() {
 
   box(menu_win, 0, 0);
   refresh();
+
+  int menubegy = getbegy(menu_derwin);
 
   post_menu(menu);
   wrefresh(menu_win);
@@ -104,26 +125,45 @@ void init_menu() {
         menu_driver(menu, REQ_UP_ITEM);
         break;
 
-      case 10: { // enter key
-        switch (item_index(current_item(menu))) {
-          case 1:
-            clear_menu(items, menu, menu_win, menu_derwin);
-            about_page();
-            return;
+      case KEY_MOUSE: {
+        MEVENT event;
 
-          case 2:
-            clear_menu(items, menu, menu_win, menu_derwin);
-            return;
+        if (getmouse(&event) == OK) {
+          switch (event.bstate) {
+            case BUTTON1_CLICKED: {
+              int mitem_count = item_count(menu);
+
+              if (menubegy <= event.y && event.y <= (menubegy + mitem_count - 1)) {
+                set_current_item(menu, items[event.y - menubegy]);
+              }
+
+              break;
+            }
+
+            case BUTTON1_DOUBLE_CLICKED: {
+              int mitem_count = item_count(menu);
+
+              if (menubegy <= event.y && event.y <= (menubegy + mitem_count - 1)) {
+                handle_menu_enter(event.y - menubegy, items, menu, menu_win, menu_derwin);
+                return;
+              }
+
+              break;
+            }
+          }
         }
 
         break;
       }
 
-      case KEY_RESIZE: {
+      case 10: // enter key
+        handle_menu_enter(item_index(current_item(menu)), items, menu, menu_win, menu_derwin);
+        return;
+
+      case KEY_RESIZE:
         clear_menu(items, menu, menu_win, menu_derwin);
         init_menu();
         return;
-      }
     }
   }
 

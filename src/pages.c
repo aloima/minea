@@ -6,11 +6,11 @@
 #include <ncurses.h>
 
 void about_page() {
-  int32_t total_cols, total_lines;
-  getmaxyx(stdscr, total_lines, total_cols);
+  const uint32_t total_cols = getmaxx(stdscr);
+  const uint32_t total_lines = getmaxy(stdscr);
 
-  int32_t lines = total_lines * 0.8;
-  int32_t cols = total_cols * 0.6;
+  const uint32_t lines = total_lines * 0.8;
+  const uint32_t cols = total_cols * 0.6;
   WINDOW *win = newwin(lines, cols, total_lines * 0.1, total_cols * 0.2);
   box(win, 0, 0);
 

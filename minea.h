@@ -36,11 +36,18 @@
     uint32_t bottom;
   };
 
+  struct Options {
+    uint32_t minefield_len;
+    uint32_t mine_count;
+  };
+
   tile_t *get_tile(struct Tiles tiles, uint32_t x, uint32_t y);
   struct Tiles generate_empty_tiles(uint32_t size);
   void place_mines(struct Tiles tiles, uint32_t count, pos_t center, struct Offset offset);
 
   void init_app();
+  void init_game();
+  void generate_board(struct Options options);
 
   void init_menu();
   void clear_menu(ITEM **items, MENU *menu, WINDOW *menu_win, WINDOW *menu_derwin);
@@ -48,4 +55,8 @@
 
   void about_page();
   void options_page();
+
+  struct Options get_options();
+  void set_options(struct Options input);
+  void read_options();
 #endif

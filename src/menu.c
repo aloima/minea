@@ -26,6 +26,11 @@ void clear_menu(ITEM **items, MENU *menu, WINDOW *menu_win, WINDOW *menu_derwin)
 
 void handle_menu_enter(int32_t index, ITEM **items, MENU *menu, WINDOW *menu_win, WINDOW *menu_derwin) {
   switch (index) {
+    case 0:
+      clear_menu(items, menu, menu_win, menu_derwin);
+      init_game();
+      return;
+
     case 1:
       clear_menu(items, menu, menu_win, menu_derwin);
       about_page();

@@ -1,3 +1,6 @@
+#include <ncurses.h>
+#include <ncurses/menu.h>
+
 #include <stdint.h>
 #include <string.h>
 #include <stdbool.h>
@@ -36,5 +39,13 @@
   tile_t *get_tile(struct Tiles tiles, uint32_t x, uint32_t y);
   struct Tiles generate_empty_tiles(uint32_t size);
   void place_mines(struct Tiles tiles, uint32_t count, pos_t center, struct Offset offset);
+
   void init_app();
+
+  void init_menu();
+  void clear_menu(ITEM **items, MENU *menu, WINDOW *menu_win, WINDOW *menu_derwin);
+  void handle_menu_enter(int index, ITEM **items, MENU *menu, WINDOW *menu_win, WINDOW *menu_derwin);
+
+  void about_page();
+  void options_page();
 #endif

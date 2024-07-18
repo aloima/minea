@@ -1,15 +1,16 @@
 #include "../minea.h"
 
 #include <stdbool.h>
+#include <stdint.h>
 
 #include <ncurses.h>
 
 void about_page() {
-  int total_cols, total_lines;
+  int32_t total_cols, total_lines;
   getmaxyx(stdscr, total_lines, total_cols);
 
-  int lines = total_lines * 0.8;
-  int cols = total_cols * 0.6;
+  int32_t lines = total_lines * 0.8;
+  int32_t cols = total_cols * 0.6;
   WINDOW *win = newwin(lines, cols, total_lines * 0.1, total_cols * 0.2);
   box(win, 0, 0);
 
@@ -24,7 +25,7 @@ void about_page() {
   refresh();
 
   while (true) {
-    int c = wgetch(win);
+    int32_t c = wgetch(win);
 
     switch (c) {
       case 'b':

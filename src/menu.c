@@ -1,6 +1,7 @@
 #include "../minea.h"
 
 #include <stdbool.h>
+#include <stdint.h>
 #include <stdlib.h>
 
 #include <ncurses.h>
@@ -23,7 +24,7 @@ void clear_menu(ITEM **items, MENU *menu, WINDOW *menu_win, WINDOW *menu_derwin)
   refresh();
 }
 
-void handle_menu_enter(int index, ITEM **items, MENU *menu, WINDOW *menu_win, WINDOW *menu_derwin) {
+void handle_menu_enter(int32_t index, ITEM **items, MENU *menu, WINDOW *menu_win, WINDOW *menu_derwin) {
   switch (index) {
     case 1:
       clear_menu(items, menu, menu_win, menu_derwin);

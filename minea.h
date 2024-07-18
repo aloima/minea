@@ -2,7 +2,7 @@
 #include <ncurses/menu.h>
 
 #include <stdint.h>
-#include <string.h>
+#include <string.h> // IWYU pragma: keep
 #include <stdbool.h>
 
 #ifndef MINEA_H_

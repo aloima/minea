@@ -13,6 +13,7 @@ void clear_menu(ITEM **items, MENU *menu, WINDOW *menu_win, WINDOW *menu_derwin)
   free_item(items[0]);
   free_item(items[1]);
   free_item(items[2]);
+  free_item(items[3]);
   free(items);
 
   delwin(menu_derwin);

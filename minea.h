@@ -47,7 +47,7 @@
 
   void init_app();
   void init_game();
-  void generate_board(struct Options options);
+  void generate_board(struct Options options, uint32_t y, uint32_t x);
 
   void init_menu();
   void clear_menu(ITEM **items, MENU *menu, WINDOW *menu_win, WINDOW *menu_derwin);

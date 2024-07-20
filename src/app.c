@@ -3,7 +3,7 @@
 #include <ncurses.h>
 #include <stdint.h>
 
-void generate_board(struct Options options) {
+void generate_board(struct Options options, uint32_t y, uint32_t x) {
   /*
     fl = first line
     l1 = vertical line
@@ -57,15 +57,15 @@ void generate_board(struct Options options) {
   ll[ml4] = ACS_LRCORNER;
   ll[ml4 + 1] = 0;
 
-  mvaddchstr(0, 0, fl);
-  mvaddchstr(1, 0, l2);
+  mvaddchstr(y, x, fl);
+  mvaddchstr(y + 1, x, l2);
 
   for (uint32_t i = 1; i < options.minefield_len; ++i) {
-    mvaddchstr(i * 2, 0, l1);
-    mvaddchstr(i * 2 + 1, 0, l2);
+    mvaddchstr(y + i * 2, x, l1);
+    mvaddchstr(y + i * 2 + 1, x, l2);
   }
 
-  mvaddchstr(options.minefield_len * 2, 0, ll);
+  mvaddchstr(y + options.minefield_len * 2, x, ll);
 
   refresh();
 }
@@ -74,7 +74,13 @@ void init_game() {
   read_options();
   struct Options options = get_options();
 
-  generate_board(options);
+  const uint32_t lines = getmaxy(stdscr);
+  const uint32_t cols = getmaxx(stdscr);
+
+  const uint32_t start_y = (lines - (options.minefield_len * 2 + 1)) / 2;
+  const uint32_t start_x = (cols - (options.minefield_len * 4 + 1)) / 2;
+
+  generate_board(options, start_y, start_x);
 
   while (true) {
     const int32_t c = getch();
@@ -100,6 +106,7 @@ void init_app() {
   cbreak();
   noecho();
 
+  mousemask(ALL_MOUSE_EVENTS, NULL);
   init_menu();
 
   endwin();

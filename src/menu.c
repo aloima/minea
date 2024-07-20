@@ -63,7 +63,6 @@ void init_menu() {
 
   MENU *menu = new_menu(items);
   WINDOW *menu_win = newwin(8, 30, (total_lines - 7) / 2, (total_cols - 30) / 2);
-  mousemask(ALL_MOUSE_EVENTS, NULL);
   keypad(menu_win, true);
 
   set_menu_mark(menu, " ");

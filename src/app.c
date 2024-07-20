@@ -2,6 +2,29 @@
 
 #include <ncurses.h>
 #include <stdint.h>
+#include <string.h>
+
+void redraw_board(struct Tiles tiles, uint32_t y, uint32_t x) {
+  for (uint32_t i = 0; i < tiles.size; ++i) {
+    const uint32_t mx = i % 9;
+    const uint32_t my = i / 9;
+
+    tile_t *tile = get_tile(tiles, mx + 1, my + 1);
+    char s[12];
+
+    if (tile->flagged) {
+      strcpy(s, "F");
+    } else if (tile->mine) {
+      strcpy(s, "M");
+    } else if (tile->opened) {
+      strcpy(s, "O");
+    } else {
+      strcpy(s, "A");
+    }
+
+    mvaddstr(my * 2 + 1 + y, mx * 4 + 2 + x, s);
+  }
+}
 
 void generate_board(struct Options options, uint32_t y, uint32_t x) {
   /*
@@ -81,6 +104,9 @@ void init_game() {
   const uint32_t start_x = (cols - (options.minefield_len * 4 + 1)) / 2;
 
   generate_board(options, start_y, start_x);
+  keypad(stdscr, true);
+
+  struct Tiles tiles = generate_empty_tiles(options.minefield_len);
 
   while (true) {
     const int32_t c = getch();
@@ -97,6 +123,36 @@ void init_game() {
         refresh();
         init_game();
         return;
+      
+      case KEY_MOUSE: {
+        MEVENT event;
+
+        if (getmouse(&event) == OK) {
+          switch (event.bstate) {
+            case BUTTON1_CLICKED: {
+              const uint32_t _y = event.y - start_y;
+              const uint32_t _x = event.x - start_x;
+
+              pos_t click_at = {
+                .y = (_y % 2 == 0) ? 0 : ((_y / 2) + 1),
+                .x = (_x % 4 == 0) ? 0 : ((_x / 4) + 1)
+              };
+
+              struct Offset offset = {
+                .bottom = 1,
+                .top = 1,
+                .left = 1,
+                .right = 1
+              };
+
+              place_mines(tiles, options.mine_count, click_at, offset);
+              redraw_board(tiles, start_y, start_x);
+
+              break;
+            }
+          }
+        }
+      }
     }
   }
 }
@@ -105,6 +161,8 @@ void init_app() {
   initscr();
   cbreak();
   noecho();
+  notimeout(stdscr, true);
+  curs_set(0);
 
   mousemask(ALL_MOUSE_EVENTS, NULL);
   init_menu();

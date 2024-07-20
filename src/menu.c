@@ -58,8 +58,8 @@ void init_menu() {
   items[3] = new_item("Exit", NULL);
   items[4] = NULL;
 
-  int total_cols, total_lines;
-  getmaxyx(stdscr, total_lines, total_cols);
+  const uint32_t total_lines = getmaxy(stdscr);
+  const uint32_t total_cols = getmaxx(stdscr);
 
   MENU *menu = new_menu(items);
   WINDOW *menu_win = newwin(8, 30, (total_lines - 7) / 2, (total_cols - 30) / 2);
@@ -74,7 +74,7 @@ void init_menu() {
   box(menu_win, 0, 0);
   refresh();
 
-  int menubegy = getbegy(menu_derwin);
+  const int32_t menubegy = getbegy(menu_derwin);
 
   post_menu(menu);
   wrefresh(menu_win);
@@ -97,7 +97,7 @@ void init_menu() {
         if (getmouse(&event) == OK) {
           switch (event.bstate) {
             case BUTTON1_CLICKED: {
-              int mitem_count = item_count(menu);
+              const int32_t mitem_count = item_count(menu);
 
               if (menubegy <= event.y && event.y <= (menubegy + mitem_count - 1)) {
                 set_current_item(menu, items[event.y - menubegy]);
@@ -107,7 +107,7 @@ void init_menu() {
             }
 
             case BUTTON1_DOUBLE_CLICKED: {
-              int mitem_count = item_count(menu);
+              const int32_t mitem_count = item_count(menu);
 
               if (menubegy <= event.y && event.y <= (menubegy + mitem_count - 1)) {
                 handle_menu_enter(event.y - menubegy, items, menu, menu_win, menu_derwin);

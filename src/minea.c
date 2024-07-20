@@ -7,7 +7,7 @@
 
 int main(int32_t argc, char *argv[]) {
   if (argc == 2) {
-    char *option = argv[1];
+    const char *option = argv[1];
 
     if (streq(option, "--version") || streq(option, "-v")) {
       puts("minea v1, https://github.com/aloima/minea");

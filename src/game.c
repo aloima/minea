@@ -3,17 +3,18 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdint.h>
-#include <math.h>
 
 tile_t *get_tile(struct Tiles tiles, uint32_t x, uint32_t y) {
   return &tiles.data[x - 1 + (y - 1) * tiles.len];
 }
 
-struct Tiles generate_empty_tiles(uint32_t size) {
+struct Tiles generate_empty_tiles(uint32_t len) {
+  const uint32_t size = len * len;
+
   struct Tiles tiles = {
     .data = malloc(size * sizeof(tile_t)),
     .size = size,
-    .len = sqrt(size)
+    .len = len
   };
 
   for (uint32_t i = 0; i < size; ++i) {
@@ -21,8 +22,8 @@ struct Tiles generate_empty_tiles(uint32_t size) {
 
     tiles.data[i] = (tile_t) {
       .position = {
-        .x = (j % tiles.len),
-        .y = (j / tiles.len)
+        .x = (j % len),
+        .y = (j / len)
       },
       .flagged = false,
       .mine = false

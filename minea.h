@@ -42,7 +42,7 @@
   };
 
   tile_t *get_tile(struct Tiles tiles, uint32_t x, uint32_t y);
-  struct Tiles generate_empty_tiles(uint32_t size);
+  struct Tiles generate_empty_tiles(uint32_t len);
   void place_mines(struct Tiles tiles, uint32_t count, pos_t center, struct Offset offset);
 
   void init_app();

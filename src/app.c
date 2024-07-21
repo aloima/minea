@@ -97,11 +97,10 @@ void init_game() {
   read_options();
   struct Options options = get_options();
 
-  const uint32_t lines = getmaxy(stdscr);
-  const uint32_t cols = getmaxx(stdscr);
+  bool placed_mines = false;
 
-  const uint32_t start_y = (lines - (options.minefield_len * 2 + 1)) / 2;
-  const uint32_t start_x = (cols - (options.minefield_len * 4 + 1)) / 2;
+  uint32_t start_y = (getmaxy(stdscr) - (options.minefield_len * 2 + 1)) / 2;
+  uint32_t start_x = (getmaxx(stdscr) - (options.minefield_len * 4 + 1)) / 2;
 
   generate_board(options, start_y, start_x);
   keypad(stdscr, true);
@@ -120,9 +119,15 @@ void init_game() {
 
       case KEY_RESIZE:
         clear();
-        refresh();
-        init_game();
-        return;
+        start_y = (getmaxy(stdscr) - (options.minefield_len * 2 + 1)) / 2;
+        start_x = (getmaxx(stdscr) - (options.minefield_len * 4 + 1)) / 2;
+        generate_board(options, start_y, start_x);
+
+        if (placed_mines) {
+          redraw_board(tiles, start_y, start_x);
+        }
+
+        break;
       
       case KEY_MOUSE: {
         MEVENT event;
@@ -133,7 +138,7 @@ void init_game() {
               const uint32_t _y = event.y - start_y;
               const uint32_t _x = event.x - start_x;
 
-              pos_t click_at = {
+              const pos_t click_at = {
                 .y = (_y % 2 == 0) ? 0 : ((_y / 2) + 1),
                 .x = (_x % 4 == 0) ? 0 : ((_x / 4) + 1)
               };
@@ -145,7 +150,7 @@ void init_game() {
                 .right = 1
               };
 
-              place_mines(tiles, options.mine_count, click_at, offset);
+              placed_mines = place_mines(tiles, options.mine_count, click_at, offset);
               redraw_board(tiles, start_y, start_x);
 
               break;

@@ -10,19 +10,19 @@ void redraw_board(struct Tiles tiles, uint32_t y, uint32_t x) {
     const uint32_t my = i / 9;
 
     tile_t *tile = get_tile(tiles, mx + 1, my + 1);
-    char s[12];
+    char c;
 
     if (tile->flagged) {
-      strcpy(s, "F");
+      c = 'F';
     } else if (tile->mine) {
-      strcpy(s, "M");
+      c = 'M';
     } else if (tile->opened) {
-      strcpy(s, "O");
+      c = 'O';
     } else {
-      strcpy(s, "A");
+      c = 'A';
     }
 
-    mvaddstr(my * 2 + 1 + y, mx * 4 + 2 + x, s);
+    mvaddch(my * 2 + 1 + y, mx * 4 + 2 + x, c);
   }
 }
 
@@ -113,7 +113,7 @@ void init_game() {
     switch (c) {
       case 'b':
         clear();
-        refresh();
+        free_tiles(tiles);
         init_menu();
         return;
 

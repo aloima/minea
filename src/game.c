@@ -8,6 +8,10 @@ tile_t *get_tile(struct Tiles tiles, uint32_t x, uint32_t y) {
   return &tiles.data[x - 1 + (y - 1) * tiles.len];
 }
 
+void free_tiles(struct Tiles tiles) {
+  free(tiles.data);
+}
+
 struct Tiles generate_empty_tiles(uint32_t len) {
   const uint32_t size = len * len;
 
@@ -57,19 +61,11 @@ bool place_mines(struct Tiles tiles, uint32_t count, pos_t center, struct Offset
           }
 
           if (!set) {
-            filled_tiles[i] = (pos_t) {
-              .x = x,
-              .y = y
-            };
-
+            filled_tiles[i] = (pos_t) {x, y};
             break;
           }
         } else {
-          filled_tiles[i] = (pos_t) {
-            .x = x,
-            .y = y
-          };
-
+          filled_tiles[i] = (pos_t) {x, y};
           break;
         }
       }

@@ -1,8 +1,9 @@
 #include "../minea.h"
 
-#include <ncurses.h>
 #include <stdint.h>
 #include <string.h>
+
+#include <ncurses.h>
 
 void redraw_board(struct Tiles tiles, uint32_t y, uint32_t x, uint32_t remaining_flags) {
   mvprintw(y - 1, x, "Remaining flags: %-3u", remaining_flags);
@@ -12,19 +13,18 @@ void redraw_board(struct Tiles tiles, uint32_t y, uint32_t x, uint32_t remaining
     const uint32_t my = i / 9;
 
     tile_t *tile = get_tile(tiles, mx + 1, my + 1);
-    char c;
 
     if (tile->flagged) {
-      c = 'F';
+      attron(COLOR_PAIR(1));
+      mvaddch(my * 2 + 1 + y, mx * 4 + 2 + x, 'F');
+      attroff(COLOR_PAIR(1));
     } else if (tile->mine) {
-      c = 'M';
+      mvaddch(my * 2 + 1 + y, mx * 4 + 2 + x, 'M');
     } else if (tile->opened) {
-      c = 'O';
+      mvaddch(my * 2 + 1 + y, mx * 4 + 2 + x, 'O');
     } else {
-      c = 'A';
+      mvaddch(my * 2 + 1 + y, mx * 4 + 2 + x, ' ');
     }
-
-    mvaddch(my * 2 + 1 + y, mx * 4 + 2 + x, c);
   }
 }
 
@@ -192,6 +192,10 @@ void init_app() {
   noecho();
   notimeout(stdscr, true);
   curs_set(0);
+
+  start_color();
+  use_default_colors();
+  init_pair(1, COLOR_RED, -1);
 
   mousemask(ALL_MOUSE_EVENTS, NULL);
   init_menu();

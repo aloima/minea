@@ -103,81 +103,117 @@ void init_game() {
 
   bool placed_mines = false;
 
-  uint32_t start_y = (getmaxy(stdscr) - (options.minefield_len * 2 + 1)) / 2;
-  uint32_t start_x = (getmaxx(stdscr) - (options.minefield_len * 4 + 1)) / 2;
+  uint32_t board_height = (options.minefield_len * 2 + 1);
+  uint32_t board_width = (options.minefield_len * 4 + 1);
+  uint32_t window_height = getmaxy(stdscr);
+  uint32_t window_width = getmaxx(stdscr);
 
-  generate_board(options, start_y, start_x);
-  keypad(stdscr, true);
+  if ((board_height + 1) > window_height || board_width > window_width) {
+    mvaddstr(window_height / 2, (window_width - 26) / 2, "Window size is not enough.");
+    refresh();
 
-  struct Tiles tiles = generate_empty_tiles(options.minefield_len);
-  uint32_t remaining_flags = options.mine_count;
-
-  while (true) {
-    const int32_t c = getch();
-
-    switch (c) {
-      case 'b':
+    while (true) {
+      if (getch() == KEY_RESIZE) {
         clear();
-        free_tiles(tiles);
-        init_menu();
-        return;
 
-      case KEY_RESIZE:
-        clear();
-        start_y = (getmaxy(stdscr) - (options.minefield_len * 2 + 1)) / 2;
-        start_x = (getmaxx(stdscr) - (options.minefield_len * 4 + 1)) / 2;
-        generate_board(options, start_y, start_x);
+        window_height = getmaxy(stdscr);
+        window_width = getmaxx(stdscr);
 
-        if (placed_mines) {
-          redraw_board(tiles, start_y, start_x, remaining_flags);
+        if ((board_height + 1) > window_height || board_width > window_width) {
+          mvaddstr(window_height / 2, (window_width - 26) / 2, "Window size is not enough.");
+          refresh();
+        } else {
+          init_game();
+          break;
         }
+      }
+    }
+  } else {
+    uint32_t start_y = (window_height - board_height) / 2;
+    uint32_t start_x = (window_width - board_width) / 2;
 
-        break;
-      
-      case KEY_MOUSE: {
-        MEVENT event;
+    generate_board(options, start_y, start_x);
+    keypad(stdscr, true);
 
-        if (getmouse(&event) == OK) {
-          const uint32_t _y = event.y - start_y;
-          const uint32_t _x = event.x - start_x;
+    struct Tiles tiles = generate_empty_tiles(options.minefield_len);
+    uint32_t remaining_flags = options.mine_count;
 
-          const pos_t click_at = {
-            .x = (_x % 4 == 0) ? 0 : ((_x / 4) + 1),
-            .y = (_y % 2 == 0) ? 0 : ((_y / 2) + 1)
-          };
+    while (true) {
+      const int32_t c = getch();
 
-          switch (event.bstate) {
-            case BUTTON1_CLICKED:
-              if (!placed_mines) {
-                struct Offset offset = {
-                  .bottom = 1,
-                  .top = 1,
-                  .left = 1,
-                  .right = 1
-                };
+      switch (c) {
+        case 'b':
+          clear();
+          free_tiles(tiles);
+          init_menu();
+          return;
 
-                placed_mines = place_mines(tiles, options.mine_count, click_at, offset);
-                redraw_board(tiles, start_y, start_x, remaining_flags);
-              }
+        case KEY_RESIZE:
+          clear();
 
-              break;
+          window_height = getmaxy(stdscr);
+          window_width = getmaxx(stdscr);
 
-            case BUTTON3_CLICKED: {
-              if (click_at.x != 0 && click_at.y != 0) {
-                tile_t *tile = get_tile(tiles, click_at.x, click_at.y);
+          if ((board_height + 1) > window_height || board_width > window_width) {
+            mvaddstr(window_height / 2, (window_width - 26) / 2, "Window size is not enough.");
+            refresh();
+          } else {
+            start_y = (window_height - board_height) / 2;
+            start_x = (window_width - board_width) / 2;
+            generate_board(options, start_y, start_x);
 
-                if (tile->flagged) {
-                  tile->flagged = false;
-                  ++remaining_flags;
-                  redraw_board(tiles, start_y, start_x, remaining_flags);
-                } else if (!tile->opened && remaining_flags != 0) {
-                  tile->flagged = true;
-                  --remaining_flags;
+            if (placed_mines) {
+              redraw_board(tiles, start_y, start_x, remaining_flags);
+            }
+          }
+
+          break;
+
+        case KEY_MOUSE: {
+          MEVENT event;
+
+          if (getmouse(&event) == OK) {
+            const uint32_t _y = event.y - start_y;
+            const uint32_t _x = event.x - start_x;
+
+            const pos_t click_at = {
+              .x = (_x % 4 == 0) ? 0 : ((_x / 4) + 1),
+              .y = (_y % 2 == 0) ? 0 : ((_y / 2) + 1)
+            };
+
+            switch (event.bstate) {
+              case BUTTON1_CLICKED:
+                if (!placed_mines) {
+                  struct Offset offset = {
+                    .bottom = 1,
+                    .top = 1,
+                    .left = 1,
+                    .right = 1
+                  };
+
+                  placed_mines = place_mines(tiles, options.mine_count, click_at, offset);
                   redraw_board(tiles, start_y, start_x, remaining_flags);
                 }
-              }
 
-              break;
+                break;
+
+              case BUTTON3_CLICKED: {
+                if (click_at.x != 0 && click_at.y != 0) {
+                  tile_t *tile = get_tile(tiles, click_at.x, click_at.y);
+
+                  if (tile->flagged) {
+                    tile->flagged = false;
+                    ++remaining_flags;
+                    redraw_board(tiles, start_y, start_x, remaining_flags);
+                  } else if (!tile->opened && remaining_flags != 0) {
+                    tile->flagged = true;
+                    --remaining_flags;
+                    redraw_board(tiles, start_y, start_x, remaining_flags);
+                  }
+                }
+
+                break;
+              }
             }
           }
         }

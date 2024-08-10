@@ -21,7 +21,13 @@ void redraw_board(struct Tiles tiles, uint32_t y, uint32_t x, uint32_t remaining
     } else if (tile->mine) {
       mvaddch(my * 2 + 1 + y, mx * 4 + 2 + x, 'M');
     } else if (tile->opened) {
-      mvaddch(my * 2 + 1 + y, mx * 4 + 2 + x, 'O');
+      if (tile->value != 0) {
+        attron(COLOR_PAIR(2));
+        mvaddch(my * 2 + 1 + y, mx * 4 + 2 + x, tile->value + 48);
+        attroff(COLOR_PAIR(2));
+      } else {
+        mvaddch(my * 2 + 1 + y, mx * 4 + 2 + x, 'X');
+      }
     } else {
       mvaddch(my * 2 + 1 + y, mx * 4 + 2 + x, ' ');
     }
@@ -193,6 +199,23 @@ void init_game() {
 
                   placed_mines = place_mines(tiles, options.mine_count, click_at, offset);
                   redraw_board(tiles, start_y, start_x, remaining_flags);
+                } else if (click_at.x != 0 && click_at.y != 0) {
+                  const uint32_t count = get_mine_count(tiles, click_at);
+                  tile_t *tile = get_tile(tiles, click_at.x, click_at.y);
+
+                  if (!tile->opened && !tile->flagged) {
+                    if (!tile->mine) {
+                      tile->opened = true;
+
+                      if (count != 0) {
+                        tile->value = count;
+                      }
+                    } else {
+                      // TODO: lose game
+                    }
+
+                    redraw_board(tiles, start_y, start_x, remaining_flags);
+                  }
                 }
 
                 break;
@@ -232,6 +255,7 @@ void init_app() {
   start_color();
   use_default_colors();
   init_pair(1, COLOR_RED, -1);
+  init_pair(2, COLOR_BLUE, -1);
 
   mousemask(ALL_MOUSE_EVENTS, NULL);
   init_menu();

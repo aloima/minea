@@ -45,6 +45,7 @@
   void free_tiles(struct Tiles tiles);
   struct Tiles generate_empty_tiles(uint32_t len);
   bool place_mines(struct Tiles tiles, uint32_t count, pos_t center, struct Offset offset);
+  uint32_t get_mine_count(struct Tiles tiles, pos_t pos);
 
   void init_app();
   void init_game();

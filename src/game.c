@@ -27,7 +27,7 @@ struct Tiles generate_empty_tiles(uint32_t len) {
     tiles.data[i] = (tile_t) {
       .position = {
         .x = (j % len),
-        .y = (j / len)
+        .y = (j / len) + 1
       },
       .flagged = false,
       .mine = false,

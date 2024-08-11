@@ -90,7 +90,7 @@ uint32_t get_mine_count(struct Tiles tiles, pos_t pos) {
   if (pos.y > 1) {
     if (get_tile(tiles, pos.x, pos.y - 1)->mine) count += 1;
     if (pos.x > 1 && get_tile(tiles, pos.x - 1, pos.y - 1)->mine) count += 1;
-    if (get_tile(tiles, pos.x + 1, pos.y - 1)->mine) count += 1;
+    if (pos.x < tiles.len && get_tile(tiles, pos.x + 1, pos.y - 1)->mine) count += 1;
   }
 
   // row 2
@@ -101,7 +101,7 @@ uint32_t get_mine_count(struct Tiles tiles, pos_t pos) {
   if (pos.y < tiles.len) {
     if (get_tile(tiles, pos.x, pos.y + 1)->mine) count += 1;
     if (pos.x > 1 && get_tile(tiles, pos.x - 1, pos.y + 1)->mine) count += 1;
-    if (get_tile(tiles, pos.x + 1, pos.y + 1)->mine) count += 1;
+    if (pos.x < tiles.len && get_tile(tiles, pos.x + 1, pos.y + 1)->mine) count += 1;
   }
 
   return count;

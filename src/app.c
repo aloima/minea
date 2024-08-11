@@ -189,32 +189,21 @@ void init_game() {
 
             switch (event.bstate) {
               case BUTTON1_CLICKED:
-                if (!placed_mines) {
-                  struct Offset offset = {
-                    .bottom = 1,
-                    .top = 1,
-                    .left = 1,
-                    .right = 1
-                  };
+                if (click_at.x != 0 && click_at.y != 0 && click_at.x <= tiles.len && click_at.y <= tiles.len) {
+                  if (!placed_mines) {
+                    struct Offset offset = {
+                      .bottom = 1,
+                      .top = 1,
+                      .left = 1,
+                      .right = 1
+                    };
 
-                  placed_mines = true;
-                  place_mines(tiles, options.mine_count, click_at, offset);
-                  redraw_board(tiles, start_y, start_x, remaining_flags);
-                } else if (click_at.x != 0 && click_at.y != 0) {
-                  const uint32_t count = get_mine_count(tiles, click_at);
-                  tile_t *tile = get_tile(tiles, click_at.x, click_at.y);
-
-                  if (!tile->opened && !tile->flagged) {
-                    if (!tile->mine) {
-                      tile->opened = true;
-
-                      if (count != 0) {
-                        tile->value = count;
-                      }
-                    } else {
-                      // TODO: lose game
-                    }
-
+                    placed_mines = true;
+                    place_mines(tiles, options.mine_count, click_at, offset);
+                    redraw_board(tiles, start_y, start_x, remaining_flags);
+                  } else {
+                    tile_t *tile = get_tile(tiles, click_at.x, click_at.y);
+                    open_area(tiles, tile, true);
                     redraw_board(tiles, start_y, start_x, remaining_flags);
                   }
                 }

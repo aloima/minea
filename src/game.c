@@ -39,7 +39,7 @@ struct Tiles generate_empty_tiles(uint32_t len) {
   return tiles;
 }
 
-bool place_mines(struct Tiles tiles, uint32_t count, pos_t center, struct Offset offset) {
+void place_mines(struct Tiles tiles, uint32_t count, pos_t center, struct Offset offset) {
   const uint32_t area_left_at = center.x - offset.left;
   const uint32_t area_right_at = center.x + offset.right;
   const uint32_t area_top_at = center.y - offset.top;
@@ -81,7 +81,6 @@ bool place_mines(struct Tiles tiles, uint32_t count, pos_t center, struct Offset
   }
 
   free(filled_tiles);
-  return true;
 }
 
 uint32_t get_mine_count(struct Tiles tiles, pos_t pos) {

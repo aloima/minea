@@ -197,7 +197,8 @@ void init_game() {
                     .right = 1
                   };
 
-                  placed_mines = place_mines(tiles, options.mine_count, click_at, offset);
+                  placed_mines = true;
+                  place_mines(tiles, options.mine_count, click_at, offset);
                   redraw_board(tiles, start_y, start_x, remaining_flags);
                 } else if (click_at.x != 0 && click_at.y != 0) {
                   const uint32_t count = get_mine_count(tiles, click_at);

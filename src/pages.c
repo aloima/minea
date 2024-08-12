@@ -48,3 +48,42 @@ void about_page() {
 void options_page() {
   
 }
+
+void lose_page(struct Tiles tiles) {
+  clear();
+  refresh();
+
+  const uint32_t total_lines = getmaxy(stdscr);
+  const uint32_t total_cols = getmaxx(stdscr);
+
+  WINDOW *win = newwin(6, 30, (total_lines - 6) / 2, (total_cols - 30) / 2);
+  box(win, 0, 0);
+
+  mvwaddstr(win, 2, 7, "You lost the game.");
+  mvwaddstr(win, 3, 4, "Press 'b' to back menu.");
+  wrefresh(win);
+
+  refresh();
+
+  while (true) {
+    int32_t c = wgetch(win);
+
+    switch (c) {
+      case 'b':
+        free_tiles(tiles);
+        delwin(win);
+        clear();
+        refresh();
+        init_menu();
+        clear();
+        return;
+
+      case KEY_RESIZE:
+        delwin(win);
+        clear();
+        refresh();
+        lose_page(tiles);
+        return;
+    }
+  }
+}

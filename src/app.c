@@ -203,8 +203,13 @@ void init_game() {
                     redraw_board(tiles, start_y, start_x, remaining_flags);
                   } else {
                     tile_t *tile = get_tile(tiles, click_at.x, click_at.y);
-                    open_area(tiles, tile, true);
-                    redraw_board(tiles, start_y, start_x, remaining_flags);
+
+                    if (!open_area(tiles, tile, true)) {
+                      lose_page(tiles);
+                      return;
+                    } else {
+                      redraw_board(tiles, start_y, start_x, remaining_flags);
+                    }
                   }
                 }
 

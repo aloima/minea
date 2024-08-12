@@ -46,7 +46,7 @@
   struct Tiles generate_empty_tiles(uint32_t len);
   void place_mines(struct Tiles tiles, uint32_t count, pos_t center, struct Offset offset);
   uint32_t get_mine_count(struct Tiles tiles, pos_t pos);
-  void open_area(struct Tiles tiles, tile_t *tile, bool direct);
+  bool open_area(struct Tiles tiles, tile_t *tile, bool direct);
 
   void init_app();
   void init_game();
@@ -58,6 +58,7 @@
 
   void about_page();
   void options_page();
+  void lose_page(struct Tiles tiles);
 
   struct Options get_options();
   void set_options(struct Options input);

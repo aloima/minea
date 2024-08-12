@@ -85,7 +85,7 @@ void place_mines(struct Tiles tiles, uint32_t count, pos_t center, struct Offset
   free(filled_tiles);
 }
 
-void open_area(struct Tiles tiles, tile_t *tile, bool direct) {
+bool open_area(struct Tiles tiles, tile_t *tile, bool direct) {
   uint32_t count = get_mine_count(tiles, tile->position);
 
   if (!tile->opened && !tile->flagged) {
@@ -94,11 +94,10 @@ void open_area(struct Tiles tiles, tile_t *tile, bool direct) {
 
       if (count != 0) {
         tile->value = count;
-        return;
+        return true;
       }
     } else if (direct) {
-      // TODO: lose game
-      return;
+      return false;
     }
   }
 
@@ -121,6 +120,8 @@ void open_area(struct Tiles tiles, tile_t *tile, bool direct) {
     tile_t *look = get_tile(tiles, tile->position.x, tile->position.y + 1);
     if (!look->opened) open_area(tiles, look, false);
   }
+
+  return true;
 }
 
 uint32_t get_mine_count(struct Tiles tiles, pos_t pos) {

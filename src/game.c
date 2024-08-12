@@ -23,11 +23,13 @@ struct Tiles generate_empty_tiles(uint32_t len) {
 
   for (uint32_t i = 0; i < size; ++i) {
     const uint32_t j = (i + 1);
+    const uint32_t _x = (j % len);
+    const uint32_t _y = (j / len);
 
     tiles.data[i] = (tile_t) {
       .position = {
-        .x = (j % len),
-        .y = (j / len) + 1
+        .x = _x == 0 ? len : _x,
+        .y = _x == 0 ? _y : _y + 1
       },
       .flagged = false,
       .mine = false,

@@ -226,7 +226,13 @@ void init_game() {
                   } else if (!tile->opened && remaining_flags != 0) {
                     tile->flagged = true;
                     --remaining_flags;
-                    redraw_board(tiles, start_y, start_x, remaining_flags);
+
+                    if (get_fully_flagged(tiles)) {
+                      win_page(tiles);
+                      return;
+                    } else {
+                      redraw_board(tiles, start_y, start_x, remaining_flags);
+                    }
                   }
                 }
 

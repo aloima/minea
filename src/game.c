@@ -147,3 +147,13 @@ uint32_t get_mine_count(struct Tiles tiles, pos_t pos) {
 
   return count;
 }
+
+bool get_fully_flagged(struct Tiles tiles) {
+  for (uint32_t i = 0; i < tiles.size; ++i) {
+    tile_t tile = tiles.data[i];
+
+    if (!tile.flagged && tile.mine) return false;
+  }
+
+  return true;
+}

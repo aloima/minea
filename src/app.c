@@ -104,7 +104,6 @@ void generate_board(struct Options options, uint32_t y, uint32_t x) {
 }
 
 void init_game() {
-  read_options();
   struct Options options = get_options();
 
   bool placed_mines = false;
@@ -247,6 +246,8 @@ void init_game() {
 }
 
 void init_app() {
+  read_options();
+
   initscr();
   cbreak();
   noecho();

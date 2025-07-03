@@ -8,6 +8,9 @@
 #ifndef MINEA_H_
   #define MINEA_H_
 
+  #define DEFAULT_MINE_COUNT 16
+  #define DEFAULT_MINEFIELD_LEN 9
+
   #define streq(s1, s2) (strcmp((s1), (s2)) == 0)
 
   typedef struct {

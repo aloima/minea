@@ -46,7 +46,87 @@ void about_page() {
 }
 
 void options_page() {
-  
+  const uint32_t total_cols = getmaxx(stdscr);
+  const uint32_t total_lines = getmaxy(stdscr);
+
+  const uint32_t lines = 7;
+  const uint32_t cols = 30;
+
+  const uint32_t begin_y = (total_lines - lines) / 2;
+  const uint32_t begin_x = (total_cols - cols) / 2;
+
+  WINDOW *win = newwin(lines, cols, begin_y, begin_x);
+  keypad(win, true);
+  box(win, 0, 0);
+
+  struct Options options = get_options();
+  char minefield_len[8], mine_count[8];
+  sprintf(minefield_len, "%d", options.minefield_len);
+  sprintf(mine_count, "%d", options.mine_count);
+
+  mvwaddstr(win, 1, 2, "Mines count:");
+  mvwaddstr(win, 1, 15, mine_count);
+
+  mvwaddstr(win, 2, 2, "Minefield size:");
+  mvwaddstr(win, 2, 18, minefield_len);
+
+  mvwaddstr(win, 5, 2, "Press 'b' to back menu.");
+  curs_set(2);
+  wrefresh(win);
+
+  refresh();
+  wmove(win, 1, 15);
+
+  while (true) {
+    int32_t c = wgetch(win);
+
+    switch (c) {
+      case 'b':
+        curs_set(0);
+        delwin(win);
+        clear();
+        refresh();
+        init_menu();
+        return;
+
+      case KEY_MOUSE: {
+        MEVENT event;
+
+        if (getmouse(&event) == OK) {
+          switch (event.bstate) {
+            case BUTTON1_CLICKED: {
+              const int32_t x = event.x - begin_x;
+              const int32_t y = event.y - begin_y;
+
+              if (x > 0 && x < cols && y > 0 && y < lines) {
+                switch (y) {
+                  case 1:
+                    wmove(win, 1, 15);
+                    break;
+
+                  case 2:
+                    wmove(win, 2, 18);
+                    break;
+
+                  default:
+                    break;
+                }
+              }
+            }
+          }
+        }
+
+        break;
+      }
+
+      case KEY_RESIZE:
+        delwin(win);
+        clear();
+        refresh();
+        options_page();
+        return;
+    }
+  }
 }
 
 void lose_page(struct Tiles tiles) {

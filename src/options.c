@@ -22,8 +22,8 @@ void read_options() {
 
   if (file == NULL) {
     options = (struct Options) {
-      .minefield_len = 9,
-      .mine_count = 16
+      .minefield_len = DEFAULT_MINEFIELD_LEN,
+      .mine_count = DEFAULT_MINE_COUNT
     };
   }
 }
